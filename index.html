@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Portraits</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; text-align: center; }
+    .images { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
+    .images img { width: 100px; height: 100px; cursor: pointer; border: 3px solid transparent; }
+    .images img:hover { border-color: blue; }
+    #indice { margin: 20px; font-size: 1.2em; }
+    #resultat { margin-top: 20px; font-weight: bold; font-size: 1.3em; }
+    button { padding: 10px 20px; font-size: 1em; margin: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Qui suis-je ?</h1>
+  <div class="images" id="images-container"></div>
+  <button onclick="montrerIndice()" id="btn-indice">Afficher l'indice n°1</button>
+  <button onclick="recommencer()">🔄 Recommencer</button>
+  <div id="indice"></div>
+  <div id="resultat"></div>
+
+  <script>
+    const personnages = [...(function() {
+      return [
+        { nom: "Wonder Woman", image: "wonderwoman.jpg", indices: ["On ne voit pas ses oreilles.", "Elle a les yeux noisette.", "Elle est bronzée et ses lèvres sont serrées.", "Ses sourcils sont bien dessinés et ses cheveux sont bruns et bouclés.", "Elle a un bandeau sur la tête."] },
+        { nom: "Harry Potter", image: "harry.jpg", indices: ["La face est longue et colorée.", "Les yeux sont en amande.", "Il a des lunettes.", "Il a une cravate.", "Il a une cicatrice sur le front."] },
+        { nom: "Elsa", image: "elsa.jpg", indices: ["Son rouge à lèvres est foncé.", "Elle est triste et a peur.", "Elle porte une robe et elle a des petites lèvres.", "Elle a les yeux bleus.", "Sa peau est claire, elle a des ongles longs, elle porte une tresse blonde."] }, 
+        { nom: "Zazie", image: "zazie.jpg", indices: ["C’est une fille.", "Son nez est allongé.", "Sa bouche est lisse. Ses sourcils sont foncés. Ses yeux louchent sur le côté comme une grenouille.", "Sa figure est ovale. Elle a le menton rond.", "Elle a les cheveux qui lui arrivent aux épaules. Elle est âgée.Ses yeux sont marron."] },
+        { nom: "Mercredi Adams", image: "mercredi.jpg", indices: ["Son visage est ovale, sa couleur de peau est pâle, ses lèvres sont épaisses", "Ses oreilles sont étroites.", "Ses cheveux sont longs.", "Son regard est sombre.", "Ses cheveux sont noirs et coiffés de deux tresses."] },
+        { nom: "Hermione Granger", image: "hermione.jpg", indices: ["C’est une fille.", "Son nez est droit ses sourcils sont bien dessinés.", "Ses lèvres sont minces, son menton est carré.", "Sa tête est ovale et la peau pâle, les yeux marron.", "Ses cheveux sont ondulés et roux."] },
+        { nom: "Superman", image: "superman.jpg", indices: ["Il a des oreilles étroites, le nez droit et les joues plates.", "Il a les yeux bleus . Il a la mâchoire carrée et un front droit.", "Il n’a pas de barbe. Il a des sourcils épais et foncés.", "Il a les cheveux noirs et il est grand.", "Il a un costume bleu clair."] },
+        { nom: "Thomas Pesquet", image: "pesquet.jpg", indices: ["Il a la tête ovale avec un peu de barbe.", "Il est châtain et les cheveux courts.", "Il est un peu bronzé mais pas beaucoup.", "Il regarde vers nous.", "Il a une veste  bleue."] },
+        { nom: "Ariel", image: "ariel.jpg", indices: ["Elle a la peau beige.", "Elle a les lèvres rouges.", "Elle a les yeux bleus.", "Ses yeux sont assez petits.", "Elle a une fleur et les cheveux sont très longs et rouges."] },
+        { nom: "Simone Biles", image: "biles.jpg", indices: ["Elle a un petit menton.", "Elle a des petites oreilles.", "Elle a les yeux marron.", "Elle a les cheveux crépus.", "Elle fait de la gymnastique."] },
+        { nom: "Soprano", image: "soprano.jpg", indices: ["La forme de son visage est ovale.", "Son teint est mat.", "Il a les yeux marron.", "Ses cheveux sont courts.", "Il a un chapeau rouge."] },
+        { nom: "Obélix", image: "obelix.jpg", indices: ["Il a les cheveux roux.", "Il a un gros nez.", "Il a des petits yeux.", "Il a un casque.", "Il porte des tresses."] },
+        { nom: "Zinedine Zidane", image: "zidane.jpg", indices: ["Il a les yeux marron, il a la tête ovale et il a un front rond.", "Il a le nez cassé, les lèvres minces et ses sourcils bien dessinés.", "Il a les dents blanches et un teint un peu bronzé.", "Il a un regard rêveur et il a les yeux pétillants.", "Il est chauve ."] },
+        { nom: "Julien Doré", image: "juliendore.jpg", indices: ["Il a une tête ovale, ses sourcils sont bien dessinés.", "Il a les yeux bleus et il a les lèvres rouges.", "Il a les cheveux un peu frisés et sont de couleur châtain.", "Il a une veste noire et il est bronzé.", "Il a une moustache et un peu de barbe."] }
+      ];
+    })()];
+
+    let personnage, indiceActuel, choixAutorisé;
+    const indiceDiv = document.getElementById("indice");
+    const resultatDiv = document.getElementById("resultat");
+    const imagesContainer = document.getElementById("images-container");
+    const btnIndice = document.getElementById("btn-indice");
+
+    function recommencer() {
+      indiceActuel = 0;
+      choixAutorisé = true;
+      personnage = personnages[Math.floor(Math.random() * personnages.length)];
+      indiceDiv.textContent = "";
+      resultatDiv.textContent = "";
+      btnIndice.textContent = "Afficher l'indice n°1";
+      btnIndice.disabled = false;
+      imagesContainer.innerHTML = "";
+      afficherImages();
+    }
+
+    function afficherImages() {
+      personnages.forEach(p => {
+        const img = document.createElement("img");
+        img.src = `images/${p.image}`;
+        img.alt = p.nom;
+        img.onclick = () => verifierChoix(p.image);
+        imagesContainer.appendChild(img);
+      });
+    }
+
+    function montrerIndice() {
+      if (indiceActuel < personnage.indices.length) {
+        indiceDiv.textContent = personnage.indices[indiceActuel];
+        choixAutorisé = true;
+        indiceActuel++;
+        btnIndice.textContent = `Afficher l'indice n°${indiceActuel + 1}`;
+      } else {
+        indiceDiv.textContent = "C’était " + personnage.nom + " !";
+        btnIndice.disabled = true;
+      }
+    }
+
+    function verifierChoix(imageChoisie) {
+      if (!choixAutorisé) return;
+      choixAutorisé = false;
+      if (imageChoisie === personnage.image) {
+        resultatDiv.textContent = `✅ Bonne réponse ! Il s’agissait bien de ${personnage.nom}.`;
+        btnIndice.disabled = true;
+      } else {
+        resultatDiv.textContent = `❌ Mauvaise réponse. Cliquez sur \"Afficher l'indice\" pour continuer.`;
+      }
+    }
+
+    recommencer();
+  </script>
+</body>
+</html>
