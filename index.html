@@ -6,15 +6,24 @@
   <title>Quiz Portraits</title>
   <style>
     body { font-family: sans-serif; padding: 20px; text-align: center; }
-    .images { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
-   .images img {
-  height: 180px;
+  .images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto 20px;
+}
+
+.images img {
+  height: 150px;
   width: auto;
-  max-width: 180px;
+  max-width: 150px;
   cursor: pointer;
   border: 3px solid transparent;
   object-fit: contain;
 }
+
     .images img:hover { border-color: blue; }
     #indice { margin: 20px; font-size: 1.2em; }
     #resultat { margin-top: 20px; font-weight: bold; font-size: 1.3em; }
